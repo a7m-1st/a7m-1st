@@ -20,7 +20,7 @@ jobs:
         run: |
           echo "Fetching visitor count..."
           COUNT=$(curl -s https://awelkaircodes-api.onrender.com/counterApi/getCount)
-          AMOUNT=$(echo $RESPONSE | jq -r '.amount')
+          AMOUNT=$(echo $RESPONSE | jq -r '.data.amount')
           echo "::set-output name=count::$AMOUNT"
 
       # Step 3: Update README.md
