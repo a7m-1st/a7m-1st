@@ -20,7 +20,8 @@ jobs:
         run: |
           echo "Fetching visitor count..."
           COUNT=$(curl -s https://awelkaircodes-api.onrender.com/counterApi/getCount)
-          echo "::set-output name=count::$COUNT"
+          AMOUNT=$(echo $RESPONSE | jq -r '.amount')
+          echo "::set-output name=count::$AMOUNT"
 
       # Step 3: Update README.md
       - name: Update README
