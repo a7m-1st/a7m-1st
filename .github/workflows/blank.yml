@@ -1,0 +1,42 @@
+name: Update Profile README with Visitor Count
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Runs every hour
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Fetch Visitor Count from API
+      - name: Fetch Visitor Count
+        id: fetch_count
+        run: |
+          echo "Fetching visitor count..."
+          COUNT=$(curl -s https://awelkaircodes-api.onrender.com/counterApi/getCount)
+          echo "::set-output name=count::$COUNT"
+
+      # Step 3: Update README.md
+      - name: Update README
+        run: |
+          COUNT=${{ steps.fetch_count.outputs.count }}
+          echo "## Welcome to My Profile! 👋" > README.md
+          echo "" >> README.md
+          echo "![Visitor Count](https://shields.io/badge/Site%20Visitors-${COUNT}-brightgreen)" >> README.md
+          echo "" >> README.md
+          echo "Thank you for visiting awelkaircodes.org!" >> README.md
+
+      # Step 4: Commit and Push Changes
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "Update visitor count [skip ci]" || echo "No changes to commit"
+          git push
